@@ -4,40 +4,126 @@ function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-const numbers = [0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048];
-const html = document.querySelector('.container');
-function generateNumbers() {
+let board = [
+  [2, 2, 4, 4],
+  [0, 2, 2, 0],
+  [0, 0, 2, 2],
+  [0, 0, 8, 8],
+];
+
+function loadBoord(board) {
   let markup = '';
-  for (let i = 0; i < 16; i++) {
-    const boxValue = numbers[rand(0, numbers.length - 1)];
-    console.log(boxValue);
-    boxValue === 0
-      ? (markup += `<div class="b box">&nbsp</div>`)
-      : (markup += `<div class="b box${boxValue}">${boxValue}</div>`);
+  for (let r = 0; r < board.length; r++) {
+    for (let c = 0; c < board.length; c++) {
+      const value = board[r][c];
+      markup += `<div class="block box${value}" id="${r}-${c}">${
+        value === 0 ? '' : value
+      }</div>`;
+    }
   }
-  html.innerHTML = markup;
+  const gameBoard = document.querySelector('.container');
+  gameBoard.innerHTML = markup;
 }
 
-document.querySelector('.btnNew').addEventListener('click', generateNumbers);
+loadBoord(board);
 
-const bodyEl = document.querySelector('body');
-
-function removeBackground() {
-  bodyEl.classList.remove('red');
-  bodyEl.classList.remove('blue');
-  bodyEl.classList.remove('white');
+function filterZerosOut(row) {
+  return row.filter((e) => e > 0);
 }
 
-document.querySelector('.btnColor.blue').addEventListener('click', () => {
-  removeBackground();
-  bodyEl.classList.add('blue');
-  // bodyEl.style.backgroundColor = 'rgb(100, 100, 201)'
+function slide(row) {
+  let filtered = filterZerosOut(row);
+  for (let n = 0; n < filtered.length; n++) {
+    if (filtered[n] === filtered[n + 1]) {
+      filtered[n] = filtered[n] * 2;
+      filtered[n + 1] = 0;
+    }
+  }
+  filtered = filterZerosOut(filtered);
+
+  for (let z = 0; z < row.length; z++) {
+    if (!filtered[z]) filtered[z] = 0;
+  }
+  return filtered;
+}
+slide(board[0]);
+slide(board[1]);
+slide(board[2]);
+slide(board[3]);
+
+document.addEventListener('keyup', (e) => {
+  if (e.code === 'ArrowLeft') {
+    slideLeft();
+  }
+  if (e.code === 'ArrowRight') {
+    slideRight();
+  }
+  if (e.code === 'ArrowUp') {
+    slideUp();
+  }
+  if (e.code === 'ArrowDown') {
+    slideDown();
+  }
 });
-document.querySelector('.btnColor.red').addEventListener('click', () => {
-  removeBackground();
-  bodyEl.classList.add('red');
-});
-document.querySelector('.btnColor.white').addEventListener('click', () => {
-  removeBackground();
-  bodyEl.classList.add('whitw');
-});
+
+function slideLeft() {
+  let newBoard = [];
+  for (let r = 0; r < board.length; r++) {
+    let newRow = slide(board[r]);
+    newBoard.push(newRow);
+  }
+  board = newBoard;
+  console.log(board);
+  loadBoord(board);
+}
+
+function slideRight() {
+  let newBoard = [];
+  for (let r = 0; r < board.length; r++) {
+    board[r].reverse();
+    let newRow = slide(board[r]);
+    newRow.reverse();
+    newBoard.push(newRow);
+  }
+  board = newBoard;
+  console.log(board);
+  loadBoord(board);
+}
+
+function transposeBoard() {
+  let newBoard = [];
+  for (let c = 0; c < board.length; c++) {
+    let newRow = [];
+    for (let r = 0; r < board[c].length; r++) {
+      newRow.push(board[r][c]);
+    }
+    newBoard.push(newRow);
+  }
+  return newBoard;
+}
+
+function slideUp() {
+  board = transposeBoard();
+  let newBoard = [];
+  for (let r = 0; r < board.length; r++) {
+    let newRow = slide(board[r]);
+    newBoard.push(newRow);
+  }
+  board = newBoard;
+  board = transposeBoard();
+  loadBoord(board);
+}
+
+function slideDown() {
+  board = transposeBoard();
+  let newBoard = [];
+  for (let r = 0; r < board.length; r++) {
+    let newRow = slide(board[r].reverse());
+    newBoard.push(newRow.reverse());
+  }
+  board = newBoard;
+  console.log(board);
+  board = transposeBoard();
+  console.log(board);
+  loadBoord(board);
+}
