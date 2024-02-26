@@ -1,45 +1,57 @@
-:root {
-  --gap: 15px;
-  --element-widht: 100px;
-}
 * {
   box-sizing: border-box;
-  --movingDistance: calc((var(--element-widht) + var(--gap)) * -1);
 }
 body {
   font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
 }
 
 .container {
+  height: 100svh;
   display: flex;
-  empty-cells: show;
-  width: 475px;
-  height: 475px;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  align-content: space-evenly;
-  background-color: #bbada0;
-
-  margin: 0 auto; /*pozicionuoja lent1 per vidurį ekrano*/
+  justify-content: center;
+  align-items: center;
 }
 
-.container .block {
-  width: 100px;
-  height: 100px;
-  font-size: 50px;
+.board {
+  position: relative;
+  empty-cells: show;
+  display: grid;
+  grid-template-columns: repeat(var(--grid-size), var(--element-size));
+  grid-template-rows: repeat(var(--grid-size), var(--element-size));
+  gap: var(--gap) var(--gap);
+  padding: var(--gap);
+  background-color: #bbada0;
+}
+
+.empty-block {
+  background-color: #cdc1b4;
+}
+
+.tile {
+  --gap: 15px;
+  --element-size: 100px;
+  --x: 0;
+  --y: 0;
+  position: absolute;
+  /* pagal koordinates paskaiciuoja, kur turi buti elementai x ir y atxzvilgiu */
+  top: calc((var(--element-size) + var(--gap)) * var(--y) + var(--gap));
+  left: calc((var(--element-size) + var(--gap)) * var(--x) + var(--gap));
+  transition: 800ms ease-in;
+  animation: appearing 1000ms ease-in;
+
+  width: var(--element-size);
+  height: var(--element-size);
+  font-size: calc(var(--element-size) / 2);
   font-weight: 600;
 
   /*skaičius pozicionuoja centre */
   display: flex;
   align-items: center;
   justify-content: center;
-
-  animation-fill-mode: forwards;
+  border: 1px solid black;
 }
 
-#0-1 {
-  animation-fill-mode: forwards;
-}
 .box0 {
   background-color: #cdc1b4;
 }
@@ -103,26 +115,13 @@ body {
     scale: 0.5;
   }
   50% {
-    scale: 1.5;
+    scale: 1.2;
   }
   100% {
     scale: 1;
   }
 }
 
-@keyframes boxMove {
-  from {
-    transform: translateY(0%);
-  }
-  to {
-    transform: translateX(var(--movingDistance));
-  }
-}
-
-main {
-  position: relative;
-  border: 1px solid black;
-}
 .bandom {
   position: absolute;
   top: 50px;

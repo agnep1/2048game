@@ -4,6 +4,27 @@ function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+const GRID_SIZE = 4;
+const ELEMENT_SIZE = 100;
+const GAP = 15;
+
+const gameBoard = document.querySelector('.board');
+function setBoard() {
+  gameBoard.style.setProperty('--grid-size', GRID_SIZE);
+  gameBoard.style.setProperty('--element-size', `${ELEMENT_SIZE}px`);
+  gameBoard.style.setProperty('--gap', `${GAP}px`);
+
+  const blocks = [];
+  for (let i = 0; i < GRID_SIZE ** 2; i++) {
+    const block = document.createElement('div');
+    block.classList.add('empty-block');
+    blocks.push(block);
+    gameBoard.append(block);
+  }
+}
+
+setBoard();
+
 let board = [
   [0, 2, 4, 0],
   [0, 0, 2, 8],
@@ -12,21 +33,23 @@ let board = [
 ];
 //Yra fono laukeliai ir yra pozicijoje relative laukeliai su reik6m5mis viso 16*2
 //vietoj ID(ar kartu) nustatin4ti x ir y ir laukeli7 pozicija keisis pagal tuos x ir y
-function loadBoord(board) {
-  let markup = '';
-  for (let r = 0; r < board.length; r++) {
-    for (let c = 0; c < board.length; c++) {
-      const value = board[r][c];
-      markup += `<div class="block box${value}" id="${r}-${c}">${
-        value === 0 ? '' : value
-      }</div>`;
-    }
-  }
-  const gameBoard = document.querySelector('.container');
-  gameBoard.innerHTML = markup;
-}
 
-loadBoord(board);
+function setGameBoard() {}
+// function loadBoord(board) {
+//   let markup = '';
+//   for (let r = 0; r < board.length; r++) {
+//     for (let c = 0; c < board.length; c++) {
+//       const value = board[r][c];
+//       markup += `<div class="empty-block box${value}" id="${r}-${c}">${
+//         value === 0 ? '' : value
+//       }</div>`;
+//     }
+//   }
+//   const gameBoard = document.querySelector('.board');
+//   gameBoard.innerHTML = markup;
+// }
+
+// loadBoord(board);
 
 function filterZerosOut(row) {
   return row.filter((e) => e > 0);
@@ -72,12 +95,8 @@ function slideLeft() {
   }
   board = newBoard;
   // console.log(board);
-  document
-    .getElementById(`0-1`)
-    .style.setProperty('animation', 'boxMove 500ms');
-  document
-    .getElementById(`0-2`)
-    .style.setProperty('animation', 'boxMove 500ms');
+  document.getElementById(`0-1`).style.setProperty('--x', 2);
+  document.getElementById(`0-2`).style.setProperty('--y', 0);
   document
     .getElementById(`1-2`)
     .style.setProperty('animation', 'boxMove 500ms');
@@ -151,8 +170,14 @@ function aditionalNumber() {
       newBox.style.setProperty('animation', 'appearing 1000ms');
     }
   }
-
-  // document
-  //   .getElementById(`0-3`)
-  //   .style.setProperty('animation', 'boxMove 500ms');
 }
+
+// document
+//   .getElementById(`0-3`)
+//   .style.setProperty('animation', 'boxMove 500ms');
+// let i = 0;
+// const int = setInterval(function () {
+//   const element = document.getElementById('t1');
+//   element.style.setProperty('--x', i);
+//   i++;
+// }, 1000);
