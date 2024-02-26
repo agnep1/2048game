@@ -5,12 +5,13 @@ function rand(min, max) {
 }
 
 let board = [
-  [2, 2, 4, 4],
-  [0, 2, 2, 0],
-  [0, 0, 2, 2],
-  [0, 0, 8, 8],
+  [0, 2, 4, 0],
+  [0, 0, 2, 8],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
 ];
-
+//Yra fono laukeliai ir yra pozicijoje relative laukeliai su reik6m5mis viso 16*2
+//vietoj ID(ar kartu) nustatin4ti x ir y ir laukeli7 pozicija keisis pagal tuos x ir y
 function loadBoord(board) {
   let markup = '';
   for (let r = 0; r < board.length; r++) {
@@ -46,10 +47,6 @@ function slide(row) {
   }
   return filtered;
 }
-slide(board[0]);
-slide(board[1]);
-slide(board[2]);
-slide(board[3]);
 
 document.addEventListener('keyup', (e) => {
   if (e.code === 'ArrowLeft') {
@@ -64,6 +61,7 @@ document.addEventListener('keyup', (e) => {
   if (e.code === 'ArrowDown') {
     slideDown();
   }
+  setTimeout(aditionalNumber, 1000);
 });
 
 function slideLeft() {
@@ -73,8 +71,20 @@ function slideLeft() {
     newBoard.push(newRow);
   }
   board = newBoard;
-  console.log(board);
-  loadBoord(board);
+  // console.log(board);
+  document
+    .getElementById(`0-1`)
+    .style.setProperty('animation', 'boxMove 500ms');
+  document
+    .getElementById(`0-2`)
+    .style.setProperty('animation', 'boxMove 500ms');
+  document
+    .getElementById(`1-2`)
+    .style.setProperty('animation', 'boxMove 500ms');
+  document
+    .getElementById(`1-3`)
+    .style.setProperty('animation', 'boxMove 500ms');
+  // setTimeout(loadBoord, 1000, board);
 }
 
 function slideRight() {
@@ -126,4 +136,23 @@ function slideDown() {
   board = transposeBoard();
   console.log(board);
   loadBoord(board);
+}
+
+function aditionalNumber() {
+  let cell = false;
+  while (cell === false) {
+    let row = Math.floor(Math.random() * board.length);
+    let cloumn = Math.floor(Math.random() * board.length);
+    if (board[row][cloumn] === 0) {
+      cell = true;
+      board[row][cloumn] = Math.random() > 0.9 ? 4 : 2;
+      loadBoord(board);
+      const newBox = document.getElementById(`${row}-${cloumn}`);
+      newBox.style.setProperty('animation', 'appearing 1000ms');
+    }
+  }
+
+  // document
+  //   .getElementById(`0-3`)
+  //   .style.setProperty('animation', 'boxMove 500ms');
 }
